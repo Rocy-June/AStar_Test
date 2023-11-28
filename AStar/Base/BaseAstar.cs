@@ -11,7 +11,7 @@ namespace Astar.Base
 {
     public class BaseAstar
     {
-        internal MapNodeTree NodeTree { get; private set; }
+        internal MapNodeTree? NodeTree { get; set; }
         public PathNode StartNode { get; protected set; }
         public Point StartPoint { get; private set; }
         public Point EndPoint { get; private set; }
@@ -27,6 +27,11 @@ namespace Astar.Base
             {
                 StartNode
             };
+        }
+        public BaseAstar()
+        {
+            StartNode = new PathNode(new Point());
+            NodeQueue = new List<PathNode>();
         }
 
         public void Reset(MapNodeTree nodeTree)
@@ -44,7 +49,7 @@ namespace Astar.Base
             Reset(NodeTree, StartPoint, point);
         }
 
-        public void Reset(MapNodeTree nodeTree, Point startPoint, Point endPoint)
+        public void Reset(MapNodeTree? nodeTree, Point startPoint, Point endPoint)
         {
             NodeTree = nodeTree;
             StartNode = new PathNode(startPoint);
@@ -55,7 +60,7 @@ namespace Astar.Base
                 StartNode
             };
 
-            NodeTree.ClearDetectedNodes();
+            NodeTree?.ClearDetectedNodes();
         }
 
         public List<Point> GetQueuePoints()
@@ -107,6 +112,11 @@ namespace Astar.Base
 
         private bool NextStep(out PathNode pathNode)
         {
+            if (NodeTree == null)
+            {
+                throw new InvalidOperationException();
+            }
+
             if (NodeQueue.Count <= 0)
             {
                 throw new NoWayToGoException();
@@ -182,7 +192,7 @@ namespace Astar.Base
                 StartNode
             };
 
-            NodeTree.ClearDetectedNodes();
+            NodeTree?.ClearDetectedNodes();
         }
     }
 }

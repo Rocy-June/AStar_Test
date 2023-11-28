@@ -9,7 +9,7 @@ namespace Astar.Tool
 {
     internal static class MapSegmentation
     {
-        private static Rectangle GetMaxRectangle(bool[,] map, int x, int y, bool[,] visited)
+        private static Rectangle GetHorizontalMaxRectangle(bool[,] map, int x, int y, bool[,] visited)
         {
             var mapWidth = map.GetLength(0);
             var mapHeight = map.GetLength(1);
@@ -24,7 +24,7 @@ namespace Astar.Tool
 
                 rectWidth++;
             }
-            ConfirmVisited(visited, x, y, rectWidth);
+            ConfirmHorizontalVisited(visited, x, y, rectWidth);
 
             for (var j = y + 1; j < mapHeight; j++)
             {
@@ -34,17 +34,56 @@ namespace Astar.Tool
                 }
 
                 rectHeight++;
-                ConfirmVisited(visited, x, j, rectWidth);
+                ConfirmHorizontalVisited(visited, x, j, rectWidth);
             }
 
             return new Rectangle(x, y, rectWidth, rectHeight);
         }
 
-        private static void ConfirmVisited(bool[,] visited, int x, int y, int width)
+        private static Rectangle GetVerticalMaxRectangle(bool[,] map, int x, int y, bool[,] visited)
+        {
+            var mapWidth = map.GetLength(0);
+            var mapHeight = map.GetLength(1);
+            var rectWidth = 1;
+            var rectHeight = 0;
+            while (y + rectHeight < mapHeight)
+            {
+                if (map[x, y + rectHeight] || visited[x, y + rectHeight])
+                {
+                    break;
+                }
+
+                rectHeight++;
+            }
+            ConfirmVerticalVisited(visited, x, y, rectHeight);
+
+            for (var i = x + 1; i < mapWidth; i++)
+            {
+                if (!NoVisitedOrWallArrange(map, i, y, rectHeight, visited))
+                {
+                    break;
+                }
+
+                rectWidth++;
+                ConfirmVerticalVisited(visited, i, y, rectHeight);
+            }
+
+            return new Rectangle(x, y, rectWidth, rectHeight);
+        }
+
+        private static void ConfirmHorizontalVisited(bool[,] visited, int x, int y, int width)
         {
             for (var i = 0; i < width; i++)
             {
                 visited[x + i, y] = true;
+            }
+        }
+
+        private static void ConfirmVerticalVisited(bool[,] visited, int x, int y, int height)
+        {
+            for (var i = 0; i < height; i++)
+            {
+                visited[x, y + i] = true;
             }
         }
 
@@ -53,6 +92,19 @@ namespace Astar.Tool
             for (var i = 0; i < width; i++)
             {
                 if (map[x + i, y] || visited[x + i, y])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool NoVisitedOrWallArrange(bool[,] map, int x, int y, int height, bool[,] visited)
+        {
+            for (var i = 0; i < height; i++)
+            {
+                if (map[x, y + i] || visited[x, y + i])
                 {
                     return false;
                 }
@@ -84,14 +136,43 @@ namespace Astar.Tool
             return false;
         }
 
-        public static List<Rectangle> GetMoveableRectangles(bool[,] map)
+        public static List<Rectangle> GetHorizontalMoveableRectangles(bool[,] map)
         {
             var visited = new bool[map.GetLength(0), map.GetLength(1)];
             var rectangles = new List<Rectangle>();
 
             while (TryFindNewStartPoint(map, visited, out var x, out var y))
             {
-                rectangles.Add(GetMaxRectangle(map, x, y, visited));
+                rectangles.Add(GetHorizontalMaxRectangle(map, x, y, visited));
+            }
+
+            return rectangles;
+        }
+
+        public static List<Rectangle> GetVerticalMoveableRectangles(bool[,] map)
+        {
+            var visited = new bool[map.GetLength(0), map.GetLength(1)];
+            var rectangles = new List<Rectangle>();
+
+            while (TryFindNewStartPoint(map, visited, out var x, out var y))
+            {
+                rectangles.Add(GetVerticalMaxRectangle(map, x, y, visited));
+            }
+
+            return rectangles;
+        }
+
+        public static List<Rectangle> GetDoubleMoveableRectangles(bool[,] map)
+        {
+            var visited = new bool[map.GetLength(0), map.GetLength(1)];
+            var rectangles = new List<Rectangle>();
+
+            while (TryFindNewStartPoint(map, visited, out var x, out var y))
+            {
+                var rect = DateTime.UtcNow.Ticks % 2 == 0
+                    ? GetHorizontalMaxRectangle(map, x, y, visited)
+                    : GetVerticalMaxRectangle(map, x, y, visited);
+                rectangles.Add(rect);
             }
 
             return rectangles;

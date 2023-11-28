@@ -13,7 +13,7 @@ namespace TestWinForm
             ApplicationConfiguration.Initialize();
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.SetDefaultFont(new Font(new FontFamily("Microsoft YaHei"), 9));
-            Application.Run(new MainForm());
+            Application.Run(new NetMapForm());
         }
     }
 }

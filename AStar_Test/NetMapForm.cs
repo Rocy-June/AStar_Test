@@ -8,7 +8,7 @@ using Astar.Main.NetAstar;
 
 namespace TestWinForm
 {
-    public partial class MainForm : Form
+    public partial class NetMapForm : Form
     {
         private NetMapAstar Astar { get; set; }
         private List<Point> LastStep { get; set; }
@@ -17,11 +17,12 @@ namespace TestWinForm
         private CancellationTokenSource AutoStepCancellationTokenSource { get; set; }
         private CancellationToken AutoStepCancellationToken { get; set; }
         private long Steps { get; set; }
-        public MainForm()
+        public NetMapForm()
         {
             InitializeComponent();
 
             DoubleBuffered = true;
+            ComboBox_SplitType.SelectedIndex = 0;
 
             Astar = new NetMapAstar(
                 new NetMap(
@@ -246,7 +247,8 @@ namespace TestWinForm
 
         private void Button_Split_Click(object sender, EventArgs e)
         {
-            Astar.Map.CalcRectangles();
+            Astar.Map.CalcRectangles((SegmentationType)ComboBox_SplitType.SelectedIndex);
+            Button_Split.Text = "ÇÐ·Ö";
             RenderMap();
         }
 

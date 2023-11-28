@@ -1,6 +1,6 @@
 ﻿namespace TestWinForm
 {
-    partial class MainForm
+    partial class SegmentationMapForm
     {
         /// <summary>
         ///  Required designer variable.
@@ -30,7 +30,7 @@
         {
             Panel_Canvas = new Panel();
             GroupBox_Control = new GroupBox();
-            button_Split = new Button();
+            Button_Split = new Button();
             Button_ClearMap = new Button();
             Button_AutoStep = new Button();
             Button_ToEnd = new Button();
@@ -42,6 +42,7 @@
             Label_MapX = new Label();
             NumericUpDown_MapY = new NumericUpDown();
             NumericUpDown_MapX = new NumericUpDown();
+            ComboBox_SplitType = new ComboBox();
             GroupBox_Control.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)NumericUpDown_MapY).BeginInit();
             ((System.ComponentModel.ISupportInitialize)NumericUpDown_MapX).BeginInit();
@@ -60,7 +61,8 @@
             // 
             // GroupBox_Control
             // 
-            GroupBox_Control.Controls.Add(button_Split);
+            GroupBox_Control.Controls.Add(ComboBox_SplitType);
+            GroupBox_Control.Controls.Add(Button_Split);
             GroupBox_Control.Controls.Add(Button_ClearMap);
             GroupBox_Control.Controls.Add(Button_AutoStep);
             GroupBox_Control.Controls.Add(Button_ToEnd);
@@ -79,19 +81,19 @@
             GroupBox_Control.TabStop = false;
             GroupBox_Control.Text = "控制器";
             // 
-            // button_Split
+            // Button_Split
             // 
-            button_Split.Location = new Point(516, 22);
-            button_Split.Name = "button_Split";
-            button_Split.Size = new Size(65, 23);
-            button_Split.TabIndex = 8;
-            button_Split.Text = "切分";
-            button_Split.UseVisualStyleBackColor = true;
-            button_Split.Click += Button_Split_Click;
+            Button_Split.Location = new Point(516, 22);
+            Button_Split.Name = "Button_Split";
+            Button_Split.Size = new Size(65, 23);
+            Button_Split.TabIndex = 8;
+            Button_Split.Text = "切分";
+            Button_Split.UseVisualStyleBackColor = true;
+            Button_Split.Click += Button_Split_Click;
             // 
             // Button_ClearMap
             // 
-            Button_ClearMap.Location = new Point(484, 22);
+            Button_ClearMap.Location = new Point(369, 22);
             Button_ClearMap.Name = "Button_ClearMap";
             Button_ClearMap.Size = new Size(26, 23);
             Button_ClearMap.TabIndex = 7;
@@ -121,7 +123,7 @@
             // 
             // Button_SetWall
             // 
-            Button_SetWall.Location = new Point(452, 22);
+            Button_SetWall.Location = new Point(337, 22);
             Button_SetWall.Name = "Button_SetWall";
             Button_SetWall.Size = new Size(26, 23);
             Button_SetWall.TabIndex = 6;
@@ -131,7 +133,7 @@
             // 
             // Button_SetEnd
             // 
-            Button_SetEnd.Location = new Point(420, 22);
+            Button_SetEnd.Location = new Point(305, 22);
             Button_SetEnd.Name = "Button_SetEnd";
             Button_SetEnd.Size = new Size(26, 23);
             Button_SetEnd.TabIndex = 5;
@@ -141,7 +143,7 @@
             // 
             // Button_SetStart
             // 
-            Button_SetStart.Location = new Point(388, 22);
+            Button_SetStart.Location = new Point(273, 22);
             Button_SetStart.Name = "Button_SetStart";
             Button_SetStart.Size = new Size(26, 23);
             Button_SetStart.TabIndex = 4;
@@ -202,6 +204,16 @@
             NumericUpDown_MapX.Value = new decimal(new int[] { 16, 0, 0, 0 });
             NumericUpDown_MapX.ValueChanged += NumericUpDown_MapX_ValueChanged;
             // 
+            // ComboBox_SplitType
+            // 
+            ComboBox_SplitType.DropDownStyle = ComboBoxStyle.DropDownList;
+            ComboBox_SplitType.FormattingEnabled = true;
+            ComboBox_SplitType.Items.AddRange(new object[] { "横向", "纵向", "时间随机" });
+            ComboBox_SplitType.Location = new Point(401, 21);
+            ComboBox_SplitType.Name = "ComboBox_SplitType";
+            ComboBox_SplitType.Size = new Size(109, 25);
+            ComboBox_SplitType.TabIndex = 12;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
@@ -236,6 +248,7 @@
         private Button Button_SetStart;
         private Button Button_AutoStep;
         private Button Button_ClearMap;
-        private Button button_Split;
+        private Button Button_Split;
+        private ComboBox ComboBox_SplitType;
     }
 }

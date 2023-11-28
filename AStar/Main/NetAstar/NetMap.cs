@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Astar.Tool;
+using Core;
 
 namespace Astar.Main.NetAstar
 {
@@ -79,9 +80,15 @@ namespace Astar.Main.NetAstar
             Walls = new bool[Width, Height];
         }
 
-        public void CalcRectangles()
+        public void CalcRectangles(SegmentationType type)
         {
-            Rectangles = MapSegmentation.GetMoveableRectangles(Walls);
+            Rectangles = type switch
+            {
+                SegmentationType.Horizontal => MapSegmentation.GetHorizontalMoveableRectangles(Walls),
+                SegmentationType.Vertical => MapSegmentation.GetVerticalMoveableRectangles(Walls),
+                SegmentationType.TickRandom => MapSegmentation.GetDoubleMoveableRectangles(Walls),
+                _ => throw new NotImplementedException()
+            };
         }
 
         public List<Rectangle> GetRectangles()

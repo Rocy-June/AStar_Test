@@ -10,7 +10,7 @@ using Astar.Tool;
 
 namespace Astar.Main.NetAstar
 {
-    public class NetMapAstar : BaseAstar
+    public sealed class NetMapAstar : BaseAstar
     {
         public NetMap Map { get; set; }
         public NetMapAstar(int width, int height) : this(width, height, new Point(), new Point(width - 1, height - 1))
