@@ -12,10 +12,10 @@ namespace Astar.Base
     public class BaseAstar
     {
         internal MapNodeTree NodeTree { get; private set; }
-        public PathNode StartNode { get; private set; }
+        public PathNode StartNode { get; protected set; }
         public Point StartPoint { get; private set; }
         public Point EndPoint { get; private set; }
-        private List<PathNode> NodeQueue { get; set; }
+        protected List<PathNode> NodeQueue { get; set; }
 
         public BaseAstar(MapNodeTree nodeTree, Point startPoint, Point endPoint)
         {

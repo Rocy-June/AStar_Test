@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Astar.Base;
+using Astar.Main.NetAstar;
 
 namespace Astar.Map
 {
@@ -12,16 +12,15 @@ namespace Astar.Map
     {
         internal Dictionary<Point, MapNode> MapNodes { get; set; }
         internal Dictionary<Point, bool> NodeDetected { get; set; }
+
         private MapNodeTree()
         {
             MapNodes = new Dictionary<Point, MapNode>();
             NodeDetected = new Dictionary<Point, bool>();
         }
 
-        public static MapNodeTree Create(BaseMap_1 map)
+        public MapNodeTree(NetMap map) : this() 
         {
-            var mapTree = new MapNodeTree();
-
             var nodes = new MapNode[map.Width, map.Height];
             for (var i = 0; i < map.Width; i++)
             {
@@ -64,16 +63,12 @@ namespace Astar.Map
             {
                 if (node == null) continue;
 
-                mapTree.MapNodes.Add(node.Location, node);
+                MapNodes.Add(node.Location, node);
             }
-
-            return mapTree;
         }
 
-        public static MapNodeTree Create(List<Rectangle> rectangles)
+        public MapNodeTree(List<Rectangle> rectangles) : this()
         {
-            var mapTree = new MapNodeTree();
-
             var nodes = rectangles.Select(e => new MapNode { Bounds = e }).ToList();
             foreach (var node in nodes)
             {
@@ -90,7 +85,12 @@ namespace Astar.Map
                 }
             }
 
-            return mapTree;
+            foreach (var node in nodes)
+            {
+                if (node == null) continue;
+
+                MapNodes.Add(node.Location, node);
+            }
         }
 
         private static List<Rectangle> FindAdjacentRectangles(List<Rectangle> rects, Rectangle detectRect)

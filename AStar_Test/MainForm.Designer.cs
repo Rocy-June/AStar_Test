@@ -28,56 +28,56 @@
         /// </summary>
         private void InitializeComponent()
         {
-            panel_Canvas = new Panel();
-            groupBox_Control = new GroupBox();
+            Panel_Canvas = new Panel();
+            GroupBox_Control = new GroupBox();
             button_Split = new Button();
-            button_ClearMap = new Button();
-            button_AutoStep = new Button();
-            button_ToEnd = new Button();
-            button_SetWall = new Button();
-            button_SetEnd = new Button();
-            button_SetStart = new Button();
-            button_NextStep = new Button();
-            checkBox_Ratio = new CheckBox();
-            label_MapX = new Label();
-            numericUpDown_MapY = new NumericUpDown();
-            numericUpDown_MapX = new NumericUpDown();
-            groupBox_Control.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown_MapY).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown_MapX).BeginInit();
+            Button_ClearMap = new Button();
+            Button_AutoStep = new Button();
+            Button_ToEnd = new Button();
+            Button_SetWall = new Button();
+            Button_SetEnd = new Button();
+            Button_SetStart = new Button();
+            Button_NextStep = new Button();
+            CheckBox_Ratio = new CheckBox();
+            Label_MapX = new Label();
+            NumericUpDown_MapY = new NumericUpDown();
+            NumericUpDown_MapX = new NumericUpDown();
+            GroupBox_Control.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDown_MapY).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDown_MapX).BeginInit();
             SuspendLayout();
             // 
-            // panel_Canvas
+            // Panel_Canvas
             // 
-            panel_Canvas.BorderStyle = BorderStyle.FixedSingle;
-            panel_Canvas.Location = new Point(12, 69);
-            panel_Canvas.Name = "panel_Canvas";
-            panel_Canvas.Size = new Size(800, 450);
-            panel_Canvas.TabIndex = 1;
-            panel_Canvas.Paint += panel_Canvas_Paint;
-            panel_Canvas.MouseDown += panel_Canvas_MouseDown;
-            panel_Canvas.MouseMove += panel_Canvas_MouseMove;
+            Panel_Canvas.BorderStyle = BorderStyle.FixedSingle;
+            Panel_Canvas.Location = new Point(12, 69);
+            Panel_Canvas.Name = "Panel_Canvas";
+            Panel_Canvas.Size = new Size(800, 450);
+            Panel_Canvas.TabIndex = 1;
+            Panel_Canvas.Paint += Panel_Canvas_Paint;
+            Panel_Canvas.MouseDown += Panel_Canvas_MouseDown;
+            Panel_Canvas.MouseMove += Panel_Canvas_MouseMove;
             // 
-            // groupBox_Control
+            // GroupBox_Control
             // 
-            groupBox_Control.Controls.Add(button_Split);
-            groupBox_Control.Controls.Add(button_ClearMap);
-            groupBox_Control.Controls.Add(button_AutoStep);
-            groupBox_Control.Controls.Add(button_ToEnd);
-            groupBox_Control.Controls.Add(button_SetWall);
-            groupBox_Control.Controls.Add(button_SetEnd);
-            groupBox_Control.Controls.Add(button_SetStart);
-            groupBox_Control.Controls.Add(button_NextStep);
-            groupBox_Control.Controls.Add(checkBox_Ratio);
-            groupBox_Control.Controls.Add(label_MapX);
-            groupBox_Control.Controls.Add(numericUpDown_MapY);
-            groupBox_Control.Controls.Add(numericUpDown_MapX);
-            groupBox_Control.Location = new Point(12, 12);
-            groupBox_Control.Name = "groupBox_Control";
-            groupBox_Control.Size = new Size(800, 51);
-            groupBox_Control.TabIndex = 0;
-            groupBox_Control.TabStop = false;
-            groupBox_Control.Text = "控制器";
+            GroupBox_Control.Controls.Add(button_Split);
+            GroupBox_Control.Controls.Add(Button_ClearMap);
+            GroupBox_Control.Controls.Add(Button_AutoStep);
+            GroupBox_Control.Controls.Add(Button_ToEnd);
+            GroupBox_Control.Controls.Add(Button_SetWall);
+            GroupBox_Control.Controls.Add(Button_SetEnd);
+            GroupBox_Control.Controls.Add(Button_SetStart);
+            GroupBox_Control.Controls.Add(Button_NextStep);
+            GroupBox_Control.Controls.Add(CheckBox_Ratio);
+            GroupBox_Control.Controls.Add(Label_MapX);
+            GroupBox_Control.Controls.Add(NumericUpDown_MapY);
+            GroupBox_Control.Controls.Add(NumericUpDown_MapX);
+            GroupBox_Control.Location = new Point(12, 12);
+            GroupBox_Control.Name = "GroupBox_Control";
+            GroupBox_Control.Size = new Size(800, 51);
+            GroupBox_Control.TabIndex = 0;
+            GroupBox_Control.TabStop = false;
+            GroupBox_Control.Text = "控制器";
             // 
             // button_Split
             // 
@@ -87,155 +87,155 @@
             button_Split.TabIndex = 8;
             button_Split.Text = "切分";
             button_Split.UseVisualStyleBackColor = true;
-            button_Split.Click += button_Split_Click;
+            button_Split.Click += Button_Split_Click;
             // 
-            // button_ClearMap
+            // Button_ClearMap
             // 
-            button_ClearMap.Location = new Point(484, 22);
-            button_ClearMap.Name = "button_ClearMap";
-            button_ClearMap.Size = new Size(26, 23);
-            button_ClearMap.TabIndex = 7;
-            button_ClearMap.Text = "清";
-            button_ClearMap.UseVisualStyleBackColor = true;
-            button_ClearMap.Click += button_ClearMap_Click;
+            Button_ClearMap.Location = new Point(484, 22);
+            Button_ClearMap.Name = "Button_ClearMap";
+            Button_ClearMap.Size = new Size(26, 23);
+            Button_ClearMap.TabIndex = 7;
+            Button_ClearMap.Text = "清";
+            Button_ClearMap.UseVisualStyleBackColor = true;
+            Button_ClearMap.Click += Button_ClearMap_Click;
             // 
-            // button_AutoStep
+            // Button_AutoStep
             // 
-            button_AutoStep.Location = new Point(658, 23);
-            button_AutoStep.Name = "button_AutoStep";
-            button_AutoStep.Size = new Size(65, 23);
-            button_AutoStep.TabIndex = 10;
-            button_AutoStep.Text = "自动";
-            button_AutoStep.UseVisualStyleBackColor = true;
-            button_AutoStep.Click += button_AutoStep_Click;
+            Button_AutoStep.Location = new Point(658, 23);
+            Button_AutoStep.Name = "Button_AutoStep";
+            Button_AutoStep.Size = new Size(65, 23);
+            Button_AutoStep.TabIndex = 10;
+            Button_AutoStep.Text = "自动";
+            Button_AutoStep.UseVisualStyleBackColor = true;
+            Button_AutoStep.Click += Button_AutoStep_Click;
             // 
-            // button_ToEnd
+            // Button_ToEnd
             // 
-            button_ToEnd.Location = new Point(729, 22);
-            button_ToEnd.Name = "button_ToEnd";
-            button_ToEnd.Size = new Size(65, 23);
-            button_ToEnd.TabIndex = 11;
-            button_ToEnd.Text = "直接计算";
-            button_ToEnd.UseVisualStyleBackColor = true;
-            button_ToEnd.Click += button_ToEnd_Click;
+            Button_ToEnd.Location = new Point(729, 22);
+            Button_ToEnd.Name = "Button_ToEnd";
+            Button_ToEnd.Size = new Size(65, 23);
+            Button_ToEnd.TabIndex = 11;
+            Button_ToEnd.Text = "直接计算";
+            Button_ToEnd.UseVisualStyleBackColor = true;
+            Button_ToEnd.Click += Button_ToEnd_Click;
             // 
-            // button_SetWall
+            // Button_SetWall
             // 
-            button_SetWall.Location = new Point(452, 22);
-            button_SetWall.Name = "button_SetWall";
-            button_SetWall.Size = new Size(26, 23);
-            button_SetWall.TabIndex = 6;
-            button_SetWall.Text = "墙";
-            button_SetWall.UseVisualStyleBackColor = true;
-            button_SetWall.Click += button_SetWall_Click;
+            Button_SetWall.Location = new Point(452, 22);
+            Button_SetWall.Name = "Button_SetWall";
+            Button_SetWall.Size = new Size(26, 23);
+            Button_SetWall.TabIndex = 6;
+            Button_SetWall.Text = "墙";
+            Button_SetWall.UseVisualStyleBackColor = true;
+            Button_SetWall.Click += Button_SetWall_Click;
             // 
-            // button_SetEnd
+            // Button_SetEnd
             // 
-            button_SetEnd.Location = new Point(420, 22);
-            button_SetEnd.Name = "button_SetEnd";
-            button_SetEnd.Size = new Size(26, 23);
-            button_SetEnd.TabIndex = 5;
-            button_SetEnd.Text = "终";
-            button_SetEnd.UseVisualStyleBackColor = true;
-            button_SetEnd.Click += button_SetEnd_Click;
+            Button_SetEnd.Location = new Point(420, 22);
+            Button_SetEnd.Name = "Button_SetEnd";
+            Button_SetEnd.Size = new Size(26, 23);
+            Button_SetEnd.TabIndex = 5;
+            Button_SetEnd.Text = "终";
+            Button_SetEnd.UseVisualStyleBackColor = true;
+            Button_SetEnd.Click += Button_SetEnd_Click;
             // 
-            // button_SetStart
+            // Button_SetStart
             // 
-            button_SetStart.Location = new Point(388, 22);
-            button_SetStart.Name = "button_SetStart";
-            button_SetStart.Size = new Size(26, 23);
-            button_SetStart.TabIndex = 4;
-            button_SetStart.Text = "起";
-            button_SetStart.UseVisualStyleBackColor = true;
-            button_SetStart.Click += button_SetStart_Click;
+            Button_SetStart.Location = new Point(388, 22);
+            Button_SetStart.Name = "Button_SetStart";
+            Button_SetStart.Size = new Size(26, 23);
+            Button_SetStart.TabIndex = 4;
+            Button_SetStart.Text = "起";
+            Button_SetStart.UseVisualStyleBackColor = true;
+            Button_SetStart.Click += Button_SetStart_Click;
             // 
-            // button_NextStep
+            // Button_NextStep
             // 
-            button_NextStep.Location = new Point(587, 22);
-            button_NextStep.Name = "button_NextStep";
-            button_NextStep.Size = new Size(65, 23);
-            button_NextStep.TabIndex = 9;
-            button_NextStep.Text = "下一步";
-            button_NextStep.UseVisualStyleBackColor = true;
-            button_NextStep.Click += button_NextStep_Click;
+            Button_NextStep.Location = new Point(587, 22);
+            Button_NextStep.Name = "Button_NextStep";
+            Button_NextStep.Size = new Size(65, 23);
+            Button_NextStep.TabIndex = 9;
+            Button_NextStep.Text = "下一步";
+            Button_NextStep.UseVisualStyleBackColor = true;
+            Button_NextStep.Click += Button_NextStep_Click;
             // 
-            // checkBox_Ratio
+            // CheckBox_Ratio
             // 
-            checkBox_Ratio.AutoSize = true;
-            checkBox_Ratio.Checked = true;
-            checkBox_Ratio.CheckState = CheckState.Checked;
-            checkBox_Ratio.Location = new Point(192, 23);
-            checkBox_Ratio.Name = "checkBox_Ratio";
-            checkBox_Ratio.Size = new Size(75, 21);
-            checkBox_Ratio.TabIndex = 3;
-            checkBox_Ratio.Text = "等比缩放";
-            checkBox_Ratio.UseVisualStyleBackColor = true;
+            CheckBox_Ratio.AutoSize = true;
+            CheckBox_Ratio.Checked = true;
+            CheckBox_Ratio.CheckState = CheckState.Checked;
+            CheckBox_Ratio.Location = new Point(192, 23);
+            CheckBox_Ratio.Name = "CheckBox_Ratio";
+            CheckBox_Ratio.Size = new Size(75, 21);
+            CheckBox_Ratio.TabIndex = 3;
+            CheckBox_Ratio.Text = "等比缩放";
+            CheckBox_Ratio.UseVisualStyleBackColor = true;
             // 
-            // label_MapX
+            // Label_MapX
             // 
-            label_MapX.AutoSize = true;
-            label_MapX.Location = new Point(89, 24);
-            label_MapX.Name = "label_MapX";
-            label_MapX.Size = new Size(14, 17);
-            label_MapX.TabIndex = 1;
-            label_MapX.Text = "x";
+            Label_MapX.AutoSize = true;
+            Label_MapX.Location = new Point(89, 24);
+            Label_MapX.Name = "Label_MapX";
+            Label_MapX.Size = new Size(14, 17);
+            Label_MapX.TabIndex = 1;
+            Label_MapX.Text = "x";
             // 
-            // numericUpDown_MapY
+            // NumericUpDown_MapY
             // 
-            numericUpDown_MapY.Location = new Point(109, 22);
-            numericUpDown_MapY.Maximum = new decimal(new int[] { 25535, 0, 0, 0 });
-            numericUpDown_MapY.Minimum = new decimal(new int[] { 9, 0, 0, 0 });
-            numericUpDown_MapY.Name = "numericUpDown_MapY";
-            numericUpDown_MapY.Size = new Size(77, 23);
-            numericUpDown_MapY.TabIndex = 2;
-            numericUpDown_MapY.Value = new decimal(new int[] { 9, 0, 0, 0 });
-            numericUpDown_MapY.ValueChanged += numericUpDown_MapY_ValueChanged;
+            NumericUpDown_MapY.Location = new Point(109, 22);
+            NumericUpDown_MapY.Maximum = new decimal(new int[] { 25535, 0, 0, 0 });
+            NumericUpDown_MapY.Minimum = new decimal(new int[] { 9, 0, 0, 0 });
+            NumericUpDown_MapY.Name = "NumericUpDown_MapY";
+            NumericUpDown_MapY.Size = new Size(77, 23);
+            NumericUpDown_MapY.TabIndex = 2;
+            NumericUpDown_MapY.Value = new decimal(new int[] { 9, 0, 0, 0 });
+            NumericUpDown_MapY.ValueChanged += NumericUpDown_MapY_ValueChanged;
             // 
-            // numericUpDown_MapX
+            // NumericUpDown_MapX
             // 
-            numericUpDown_MapX.Location = new Point(6, 22);
-            numericUpDown_MapX.Maximum = new decimal(new int[] { 25535, 0, 0, 0 });
-            numericUpDown_MapX.Minimum = new decimal(new int[] { 16, 0, 0, 0 });
-            numericUpDown_MapX.Name = "numericUpDown_MapX";
-            numericUpDown_MapX.Size = new Size(77, 23);
-            numericUpDown_MapX.TabIndex = 0;
-            numericUpDown_MapX.Value = new decimal(new int[] { 16, 0, 0, 0 });
-            numericUpDown_MapX.ValueChanged += numericUpDown_MapX_ValueChanged;
+            NumericUpDown_MapX.Location = new Point(6, 22);
+            NumericUpDown_MapX.Maximum = new decimal(new int[] { 25535, 0, 0, 0 });
+            NumericUpDown_MapX.Minimum = new decimal(new int[] { 16, 0, 0, 0 });
+            NumericUpDown_MapX.Name = "NumericUpDown_MapX";
+            NumericUpDown_MapX.Size = new Size(77, 23);
+            NumericUpDown_MapX.TabIndex = 0;
+            NumericUpDown_MapX.Value = new decimal(new int[] { 16, 0, 0, 0 });
+            NumericUpDown_MapX.ValueChanged += NumericUpDown_MapX_ValueChanged;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(824, 531);
-            Controls.Add(groupBox_Control);
-            Controls.Add(panel_Canvas);
+            Controls.Add(GroupBox_Control);
+            Controls.Add(Panel_Canvas);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             Name = "MainForm";
             Text = "MainForm";
             Load += MainForm_Load;
-            groupBox_Control.ResumeLayout(false);
-            groupBox_Control.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown_MapY).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown_MapX).EndInit();
+            GroupBox_Control.ResumeLayout(false);
+            GroupBox_Control.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDown_MapY).EndInit();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDown_MapX).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private Panel panel_Canvas;
-        private GroupBox groupBox_Control;
-        private Label label_MapX;
-        private NumericUpDown numericUpDown_MapY;
-        private NumericUpDown numericUpDown_MapX;
-        private CheckBox checkBox_Ratio;
-        private Button button_NextStep;
-        private Button button_ToEnd;
-        private Button button_SetWall;
-        private Button button_SetEnd;
-        private Button button_SetStart;
-        private Button button_AutoStep;
-        private Button button_ClearMap;
+        private Panel Panel_Canvas;
+        private GroupBox GroupBox_Control;
+        private Label Label_MapX;
+        private NumericUpDown NumericUpDown_MapY;
+        private NumericUpDown NumericUpDown_MapX;
+        private CheckBox CheckBox_Ratio;
+        private Button Button_NextStep;
+        private Button Button_ToEnd;
+        private Button Button_SetWall;
+        private Button Button_SetEnd;
+        private Button Button_SetStart;
+        private Button Button_AutoStep;
+        private Button Button_ClearMap;
         private Button button_Split;
     }
 }

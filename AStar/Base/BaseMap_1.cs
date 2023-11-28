@@ -16,6 +16,7 @@ namespace Astar.Base
         public Point StartPoint { get; private set; }
         public Point EndPoint { get; private set; }
         public bool[,] Walls { get; private set; }
+        private bool[,] DetectedAreas { get; set; }
         internal Point[] Offsets { get; } = new Point[]
         {
             new Point(1, 0),
@@ -37,6 +38,7 @@ namespace Astar.Base
             StartPoint = startPoint;
             EndPoint = endPoint;
             Walls = new bool[width, height];
+            DetectedAreas = new bool[width, height];
             Rectangles = new List<Rectangle>();
         }
 
@@ -57,12 +59,21 @@ namespace Astar.Base
                 }
             }
             Walls = tmpWalls;
+
+            ResetPath();
         }
 
         public void ResetPoint(Point? startPoint = null, Point? endPoint = null)
         {
             StartPoint = startPoint ?? StartPoint;
             EndPoint = endPoint ?? EndPoint;
+
+            ResetPath();
+        }
+
+        public virtual void ResetPath()
+        {
+            DetectedAreas = new bool[Width, Height];
         }
 
         public void DrawWall(Point p, bool isWall = true)
@@ -72,11 +83,40 @@ namespace Astar.Base
         public void DrawWall(int x, int y, bool isWall = true)
         {
             try { Walls[x, y] = isWall; } catch { }
+
+            ResetPath();
         }
 
         public void ClearWall()
         {
             Walls = new bool[Width, Height];
+
+            ResetPath();
+        }
+
+        protected void SetDetectBlock(Point p, bool isDetected = true)
+        {
+            SetDetectBlock(p.X, p.Y, isDetected);
+        }
+
+        protected void SetDetectBlock(int x, int y, bool isDetected = true)
+        {
+            DetectedAreas[x, y] = isDetected;
+        }
+
+        public bool IsDetectedOrWall(Point point)
+        {
+            return IsDetectedOrWall(point.X, point.Y);
+        }
+
+        public bool IsDetectedOrWall(int x, int y)
+        {
+            if (x < 0 || y < 0 || x >= Width || y >= Height)
+            {
+                return true;
+            }
+
+            return DetectedAreas[x, y] || Walls[x, y];
         }
 
         public void CalcRectangles()

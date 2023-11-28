@@ -1,14 +1,16 @@
 using System.DirectoryServices.ActiveDirectory;
+using Astar.Base;
 using Astar.Map;
 using Astar.Main;
 using Core;
 using Extension;
+using Astar.Main.NetAstar;
 
 namespace TestWinForm
 {
     public partial class MainForm : Form
     {
-        private NetMapAstar MathAstar { get; set; }
+        private NetMapAstar Astar { get; set; }
         private List<Point> LastStep { get; set; }
         private SettingType SettingType { get; set; }
         private Thread? AutoStepThread { get; set; }
@@ -21,7 +23,12 @@ namespace TestWinForm
 
             DoubleBuffered = true;
 
-            MathAstar = new NetMapAstar((int)numericUpDown_MapX.Value, (int)numericUpDown_MapY.Value);
+            Astar = new NetMapAstar(
+                new NetMap(
+                    (int)NumericUpDown_MapX.Value,
+                    (int)NumericUpDown_MapY.Value,
+                    new Point(),
+                    new Point((int)NumericUpDown_MapX.Value - 1, (int)NumericUpDown_MapY.Value - 1)));
             LastStep = new List<Point>();
 
             AutoStepCancellationTokenSource = new CancellationTokenSource();
@@ -44,23 +51,23 @@ namespace TestWinForm
 
         private void RenderMap()
         {
-            var perLineX = (panel_Canvas.Width - 2) / numericUpDown_MapX.Value;
-            var perLineY = (panel_Canvas.Height - 2) / numericUpDown_MapY.Value;
+            var perLineX = (Panel_Canvas.Width - 2) / NumericUpDown_MapX.Value;
+            var perLineY = (Panel_Canvas.Height - 2) / NumericUpDown_MapY.Value;
 
-            using var buffer = new Bitmap(panel_Canvas.Width, panel_Canvas.Height);
+            using var buffer = new Bitmap(Panel_Canvas.Width, Panel_Canvas.Height);
 
             using (var pen = new Pen(Color.Black, 1))
             using (var bg = Graphics.FromImage(buffer))
             {
-                bg.Clear(panel_Canvas.BackColor);
+                bg.Clear(Panel_Canvas.BackColor);
 
-                var x = MathAstar.Walls.GetLength(0);
-                var y = MathAstar.Walls.GetLength(1);
+                var x = Astar.Map.Walls.GetLength(0);
+                var y = Astar.Map.Walls.GetLength(1);
                 for (var i = 0; i < x; i++)
                 {
                     for (var j = 0; j < y; j++)
                     {
-                        if (MathAstar.Walls[i, j])
+                        if (Astar.Map.Walls[i, j])
                         {
                             bg.FillRectangle(
                                 new SolidBrush(Color.DarkSlateGray),
@@ -71,7 +78,7 @@ namespace TestWinForm
                     }
                 }
 
-                var readOnlyNode = MathAstar.StartNode.GetReadOnlyNode();
+                var readOnlyNode = Astar.StartNode.GetReadOnlyNode();
                 DrawPathNode(bg, perLineX, perLineY, readOnlyNode);
 
                 foreach (var point in LastStep)
@@ -83,7 +90,7 @@ namespace TestWinForm
                                     new SizeF((float)perLineX, (float)perLineY)));
                 }
 
-                var queuePoints = MathAstar.GetQueuePoints();
+                var queuePoints = Astar.GetQueuePoints();
                 foreach (var point in queuePoints)
                 {
                     bg.FillRectangle(
@@ -96,37 +103,37 @@ namespace TestWinForm
                 bg.FillRectangle(
                     new SolidBrush(Color.LightGreen),
                     new RectangleF(
-                        new PointF((float)(MathAstar.StartPoint.X * perLineX), (float)(MathAstar.StartPoint.Y * perLineY)),
+                        new PointF((float)(Astar.StartPoint.X * perLineX), (float)(Astar.StartPoint.Y * perLineY)),
                         new SizeF((float)perLineX, (float)perLineY)));
                 bg.FillRectangle(
                     new SolidBrush(Color.Red),
                     new RectangleF(
-                        new PointF((float)(MathAstar.EndPoint.X * perLineX), (float)(MathAstar.EndPoint.Y * perLineY)),
+                        new PointF((float)(Astar.EndPoint.X * perLineX), (float)(Astar.EndPoint.Y * perLineY)),
                         new SizeF((float)perLineX, (float)perLineY)));
 
-                for (var i = 1; i < numericUpDown_MapX.Value; i++)
+                for (var i = 1; i < NumericUpDown_MapX.Value; i++)
                 {
-                    bg.DrawLine(pen, new PointF((float)(perLineX * i), 0), new PointF((float)(perLineX * i), panel_Canvas.Height));
+                    bg.DrawLine(pen, new PointF((float)(perLineX * i), 0), new PointF((float)(perLineX * i), Panel_Canvas.Height));
                 }
-                for (var i = 1; i < numericUpDown_MapY.Value; i++)
+                for (var i = 1; i < NumericUpDown_MapY.Value; i++)
                 {
-                    bg.DrawLine(pen, new PointF(0, (float)(perLineY * i)), new PointF(panel_Canvas.Width, (float)(perLineY * i)));
+                    bg.DrawLine(pen, new PointF(0, (float)(perLineY * i)), new PointF(Panel_Canvas.Width, (float)(perLineY * i)));
                 }
 
                 pen.Color = Color.Blue;
                 pen.Width = 2;
 
-                var rects = MathAstar.GetRectangles();
+                var rects = Astar.Map.GetRectangles();
                 for (var i = 0; i < rects.Count; i++)
                 {
                     bg.DrawRectangle(pen, (float)(perLineX * rects[i].Left), (float)(perLineY * rects[i].Top), (float)(perLineX * rects[i].Width), (float)(perLineY * rects[i].Height));
                 }
 
                 bg.DrawString($"MouseState: {SettingType}", new Font("Microsoft YaHei", 9), new SolidBrush(Color.Black), new Point());
-                bg.DrawString(Steps.ToString(), new Font("Microsoft YaHei", 9, FontStyle.Bold), new SolidBrush(Color.Black), new Point(0, panel_Canvas.Height - 16));
+                bg.DrawString(Steps.ToString(), new Font("Microsoft YaHei", 9, FontStyle.Bold), new SolidBrush(Color.Black), new Point(0, Panel_Canvas.Height - 16));
             }
 
-            using var g = panel_Canvas.CreateGraphics();
+            using var g = Panel_Canvas.CreateGraphics();
             g.DrawImage(buffer, new Point());
         }
         private void DrawPathNode(Graphics bg, decimal width, decimal height, ReadOnlyNode node)
@@ -157,23 +164,24 @@ namespace TestWinForm
         }
         private Point GetBlockPoint(int x, int y)
         {
-            var perLineX = (decimal)(panel_Canvas.Width - 2) / MathAstar.Width;
-            var perLineY = (decimal)(panel_Canvas.Height - 2) / MathAstar.Height;
+            var perLineX = (decimal)(Panel_Canvas.Width - 2) / Astar.Map.Width;
+            var perLineY = (decimal)(Panel_Canvas.Height - 2) / Astar.Map.Height;
             return new Point((int)(x / perLineX), (int)(y / perLineY));
         }
 
         private void ResetMap()
         {
-            var oldWidth = MathAstar.Width;
-            var oldHeight = MathAstar.Height;
-            MathAstar.ResetSize((int)numericUpDown_MapX.Value, (int)numericUpDown_MapY.Value);
-            MathAstar.ResetPoint(
+            var oldWidth = Astar.Map.Width;
+            var oldHeight = Astar.Map.Height;
+            Astar.Map.ResetSize((int)NumericUpDown_MapX.Value, (int)NumericUpDown_MapY.Value);
+            Astar.Map.ResetPoint(
                 new Point(
-                    (int)((MathAstar.StartPoint.X + 0.5m) / oldWidth * numericUpDown_MapX.Value),
-                    (int)((MathAstar.StartPoint.Y + 0.5m) / oldHeight * numericUpDown_MapY.Value)),
+                    (int)((Astar.StartPoint.X + 0.5m) / oldWidth * NumericUpDown_MapX.Value),
+                    (int)((Astar.StartPoint.Y + 0.5m) / oldHeight * NumericUpDown_MapY.Value)),
                 new Point(
-                    (int)((MathAstar.EndPoint.X + 0.5m) / oldWidth * numericUpDown_MapX.Value),
-                    (int)((MathAstar.EndPoint.Y + 0.5m) / oldHeight * numericUpDown_MapY.Value)));
+                    (int)((Astar.EndPoint.X + 0.5m) / oldWidth * NumericUpDown_MapX.Value),
+                    (int)((Astar.EndPoint.Y + 0.5m) / oldHeight * NumericUpDown_MapY.Value)));
+            Astar.Reset();
             RenderMap();
         }
 
@@ -182,43 +190,45 @@ namespace TestWinForm
             RenderMap();
         }
 
-        private void numericUpDown_MapX_ValueChanged(object sender, EventArgs e)
+        private void NumericUpDown_MapX_ValueChanged(object sender, EventArgs e)
         {
-            if (checkBox_Ratio.Checked)
+            if (CheckBox_Ratio.Checked)
             {
-                numericUpDown_MapY.Value = CalcRatioNumber((int)numericUpDown_MapX.Value, null, 16d / 9);
+                NumericUpDown_MapY.Value = CalcRatioNumber((int)NumericUpDown_MapX.Value, null, 16d / 9);
             }
 
+            Astar.ResetCalculation();
             Steps = 0;
             LastStep.Clear();
             ResetMap();
         }
 
-        private void numericUpDown_MapY_ValueChanged(object sender, EventArgs e)
+        private void NumericUpDown_MapY_ValueChanged(object sender, EventArgs e)
         {
-            if (checkBox_Ratio.Checked)
+            if (CheckBox_Ratio.Checked)
             {
-                numericUpDown_MapX.Value = CalcRatioNumber(null, (int)numericUpDown_MapY.Value, 16d / 9);
+                NumericUpDown_MapX.Value = CalcRatioNumber(null, (int)NumericUpDown_MapY.Value, 16d / 9);
             }
 
+            Astar.ResetCalculation();
             Steps = 0;
             LastStep.Clear();
             ResetMap();
         }
 
-        private void button_SetStart_Click(object sender, EventArgs e)
+        private void Button_SetStart_Click(object sender, EventArgs e)
         {
             SettingType = SettingType.Start;
             RenderMap();
         }
 
-        private void button_SetEnd_Click(object sender, EventArgs e)
+        private void Button_SetEnd_Click(object sender, EventArgs e)
         {
             SettingType = SettingType.End;
             RenderMap();
         }
 
-        private void button_SetWall_Click(object sender, EventArgs e)
+        private void Button_SetWall_Click(object sender, EventArgs e)
         {
             SettingType = SettingType == SettingType.Wall
                 ? SettingType.None
@@ -226,24 +236,25 @@ namespace TestWinForm
             RenderMap();
         }
 
-        private void button_ClearMap_Click(object sender, EventArgs e)
+        private void Button_ClearMap_Click(object sender, EventArgs e)
         {
-            MathAstar.ClearWall();
+            Astar.Map.ClearWall();
+            Astar.ResetCalculation();
             LastStep.Clear();
             RenderMap();
         }
 
-        private void button_Split_Click(object sender, EventArgs e)
+        private void Button_Split_Click(object sender, EventArgs e)
         {
-            MathAstar.CalcRectangles();
+            Astar.Map.CalcRectangles();
             RenderMap();
         }
 
-        private void button_NextStep_Click(object sender, EventArgs e)
+        private void Button_NextStep_Click(object sender, EventArgs e)
         {
             SettingType = SettingType.None;
 
-            var flag = MathAstar.TryNextStep(out var lastStep);
+            var flag = Astar.TryNextStep(out var lastStep);
             LastStep = lastStep ?? new List<Point>();
             RenderMap();
 
@@ -253,18 +264,18 @@ namespace TestWinForm
             }
         }
 
-        private void button_AutoStep_Click(object sender, EventArgs e)
+        private void Button_AutoStep_Click(object sender, EventArgs e)
         {
             var time = 600;
 
             if (AutoStepThread?.IsAlive == true)
             {
-                button_SetStart.Enabled = true;
-                button_SetEnd.Enabled = true;
-                button_SetWall.Enabled = true;
-                button_NextStep.Enabled = true;
-                button_ToEnd.Enabled = true;
-                button_AutoStep.Text = "自动";
+                Button_SetStart.Enabled = true;
+                Button_SetEnd.Enabled = true;
+                Button_SetWall.Enabled = true;
+                Button_NextStep.Enabled = true;
+                Button_ToEnd.Enabled = true;
+                Button_AutoStep.Text = "自动";
                 AutoStepCancellationTokenSource.Cancel();
                 return;
             }
@@ -273,12 +284,12 @@ namespace TestWinForm
             AutoStepCancellationToken = AutoStepCancellationTokenSource.Token;
 
             SettingType = SettingType.None;
-            button_SetStart.Enabled = false;
-            button_SetEnd.Enabled = false;
-            button_SetWall.Enabled = false;
-            button_NextStep.Enabled = false;
-            button_ToEnd.Enabled = false;
-            button_AutoStep.Text = "取消";
+            Button_SetStart.Enabled = false;
+            Button_SetEnd.Enabled = false;
+            Button_SetWall.Enabled = false;
+            Button_NextStep.Enabled = false;
+            Button_ToEnd.Enabled = false;
+            Button_AutoStep.Text = "取消";
             AutoStepThread = new Thread(() =>
             {
                 var flag = true;
@@ -287,22 +298,22 @@ namespace TestWinForm
                     Steps++;
                     Invoke(() =>
                     {
-                        flag = MathAstar.TryNextStep(out var lastStep);
+                        flag = Astar.TryNextStep(out var lastStep);
                         LastStep = lastStep ?? new List<Point>();
                         RenderMap();
                     });
 
-                    Thread.Sleep(time / MathAstar.Width);
+                    Thread.Sleep(time / Astar.Map.Width);
                 }
 
                 Invoke(() =>
                 {
-                    button_SetStart.Enabled = true;
-                    button_SetEnd.Enabled = true;
-                    button_SetWall.Enabled = true;
-                    button_NextStep.Enabled = true;
-                    button_ToEnd.Enabled = true;
-                    button_AutoStep.Text = "自动";
+                    Button_SetStart.Enabled = true;
+                    Button_SetEnd.Enabled = true;
+                    Button_SetWall.Enabled = true;
+                    Button_NextStep.Enabled = true;
+                    Button_ToEnd.Enabled = true;
+                    Button_AutoStep.Text = "自动";
                 });
                 MessageBox.Show("执行完毕");
             })
@@ -312,9 +323,9 @@ namespace TestWinForm
             AutoStepThread.Start();
         }
 
-        private void button_ToEnd_Click(object sender, EventArgs e)
+        private void Button_ToEnd_Click(object sender, EventArgs e)
         {
-            var flag = MathAstar.TryCalcResult(out var lastStep);
+            var flag = Astar.TryCalcResult(out var lastStep);
             LastStep = lastStep ?? new List<Point>();
             RenderMap();
 
@@ -324,11 +335,13 @@ namespace TestWinForm
             }
         }
 
-        private void panel_Canvas_MouseDown(object sender, MouseEventArgs e)
+        private void Panel_Canvas_MouseDown(object sender, MouseEventArgs e)
         {
             if (SettingType == SettingType.Start)
             {
-                MathAstar.ResetPoint(GetBlockPoint(GetCursorToControl(panel_Canvas)));
+                var point = GetBlockPoint(GetCursorToControl(Panel_Canvas));
+                Astar.Map.ResetPoint(point);
+                Astar.ResetStartPoint(point);
                 Steps = 0;
                 LastStep.Clear();
                 SettingType = SettingType.None;
@@ -336,7 +349,9 @@ namespace TestWinForm
             else
             if (SettingType == SettingType.End)
             {
-                MathAstar.ResetPoint(null, GetBlockPoint(GetCursorToControl(panel_Canvas)));
+                var point = GetBlockPoint(GetCursorToControl(Panel_Canvas));
+                Astar.Map.ResetPoint(null, point);
+                Astar.ResetEndPoint(point);
                 Steps = 0;
                 LastStep.Clear();
                 SettingType = SettingType.None;
@@ -346,13 +361,15 @@ namespace TestWinForm
             {
                 if (e.Button == MouseButtons.Left)
                 {
-                    MathAstar.DrawWall(GetBlockPoint(GetCursorToControl(panel_Canvas)), true);
+                    Astar.Map.DrawWall(GetBlockPoint(GetCursorToControl(Panel_Canvas)), true);
+                    Astar.Reset();
                     Steps = 0;
                     LastStep.Clear();
                 }
                 if (e.Button == MouseButtons.Right)
                 {
-                    MathAstar.DrawWall(GetBlockPoint(GetCursorToControl(panel_Canvas)), false);
+                    Astar.Map.DrawWall(GetBlockPoint(GetCursorToControl(Panel_Canvas)), false);
+                    Astar.Reset();
                     Steps = 0;
                     LastStep.Clear();
                 }
@@ -361,7 +378,7 @@ namespace TestWinForm
             RenderMap();
         }
 
-        private void panel_Canvas_MouseMove(object sender, MouseEventArgs e)
+        private void Panel_Canvas_MouseMove(object sender, MouseEventArgs e)
         {
             if (SettingType != SettingType.Wall)
             {
@@ -371,7 +388,8 @@ namespace TestWinForm
 
             if (e.Button == MouseButtons.Left)
             {
-                MathAstar.DrawWall(GetBlockPoint(GetCursorToControl(panel_Canvas)), true);
+                Astar.Map.DrawWall(GetBlockPoint(GetCursorToControl(Panel_Canvas)), true);
+                Astar.Reset();
                 Steps = 0;
                 LastStep.Clear();
                 RenderMap();
@@ -379,7 +397,8 @@ namespace TestWinForm
             }
             if (e.Button == MouseButtons.Right)
             {
-                MathAstar.DrawWall(GetBlockPoint(GetCursorToControl(panel_Canvas)), false);
+                Astar.Map.DrawWall(GetBlockPoint(GetCursorToControl(Panel_Canvas)), false);
+                Astar.Reset();
                 Steps = 0;
                 LastStep.Clear();
                 RenderMap();
@@ -387,7 +406,7 @@ namespace TestWinForm
             }
         }
 
-        private void panel_Canvas_Paint(object sender, PaintEventArgs e)
+        private void Panel_Canvas_Paint(object sender, PaintEventArgs e)
         {
             RenderMap();
         }
