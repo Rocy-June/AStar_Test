@@ -15,7 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="MainForm.cs">
+    <Compile Update="SegmentationMapForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="NetMapForm.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
