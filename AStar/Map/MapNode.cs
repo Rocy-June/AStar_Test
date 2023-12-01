@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core;
 
 namespace Astar.Map
 {
@@ -21,6 +22,7 @@ namespace Astar.Map
         }
         public List<MapNode> NearingNodes { get; set; }
         private Rectangle _Bounds { get; set; }
+        public NodePositionType PositionType { get; set; }
         public MapNode()
         {
             NearingNodes = new List<MapNode>();

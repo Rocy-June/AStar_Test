@@ -4,7 +4,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Astar.Main.NetAstar;
+using Astar.Main;
+using Core;
 
 namespace Astar.Map
 {
@@ -19,7 +20,7 @@ namespace Astar.Map
             NodeDetected = new Dictionary<Point, bool>();
         }
 
-        public MapNodeTree(NetMap map) : this() 
+        public MapNodeTree(NetMap map) : this()
         {
             var nodes = new MapNode[map.Width, map.Height];
             for (var i = 0; i < map.Width; i++)
@@ -69,38 +70,75 @@ namespace Astar.Map
 
         public MapNodeTree(List<Rectangle> rectangles) : this()
         {
-            var nodes = rectangles.Select(e => new MapNode { Bounds = e }).ToList();
-            foreach (var node in nodes)
+            var nodes = new List<MapNode>();
+            foreach (var rect in rectangles)
             {
-                var nearingRects = FindAdjacentRectangles(rectangles, node.Bounds);
-                foreach (var nearingRect in nearingRects)
+                if (rect.Width == 1)
                 {
-                    var nearingNode = nodes.Find(e => e.Bounds == nearingRect);
-                    if (nearingNode == null)
+                    nodes.Add(new MapNode
                     {
-                        continue;
-                    }
+                        Bounds = rect,
+                        Location = new Point(rect.X, rect.Y + rect.Height / 2),
+                        PositionType = NodePositionType.Left | NodePositionType.Right,
+                    });
+                }
+                else
+                {
+                    nodes.Add(new MapNode
+                    {
+                        Bounds = rect,
+                        Location = new Point(rect.X, rect.Y + rect.Height / 2),
+                        PositionType = NodePositionType.Left
+                    });
+                    nodes.Add(new MapNode
+                    {
+                        Bounds = rect,
+                        Location = new Point(rect.X + rect.Width - 1, rect.Y + rect.Height / 2),
+                        PositionType = NodePositionType.Right
+                    });
+                }
 
-                    node.NearingNodes.Add(nearingNode);
+
+
+                if (rect.Height == 1)
+                {
+                    nodes.Add(new MapNode
+                    {
+                        Bounds = rect,
+                        Location = new Point(rect.X + rect.Width / 2, rect.Y),
+                        PositionType = NodePositionType.Top | NodePositionType.Bottom
+                    });
+                }
+                else
+                {
+                    nodes.Add(new MapNode
+                    {
+                        Bounds = rect,
+                        Location = new Point(rect.X + rect.Width / 2, rect.Y),
+                        PositionType = NodePositionType.Top
+                    });
+                    nodes.Add(new MapNode
+                    {
+                        Bounds = rect,
+                        Location = new Point(rect.X + rect.Width / 2, rect.Y + rect.Height - 1),
+                        PositionType = NodePositionType.Bottom
+                    });
                 }
             }
-
             foreach (var node in nodes)
             {
-                if (node == null) continue;
+                node.NearingNodes.AddRange(nodes.Where(e => e.Bounds == node.Bounds && e != node));
+                node.NearingNodes.AddRange(
+                    nodes.Where(e =>
+                        e.Bounds.IntersectsWith(node.Bounds) &&
+                        e.Bounds.Top == node.Bounds.Bottom + 1 ||
+                        e.Bounds.Bottom == node.Bounds.Top - 1 ||
+                        e.Bounds.Left == node.Bounds.Right + 1 ||
+                        e.Bounds.Right == node.Bounds.Left - 1));
 
                 MapNodes.Add(node.Location, node);
             }
-        }
 
-        private static List<Rectangle> FindAdjacentRectangles(List<Rectangle> rects, Rectangle detectRect)
-        {
-            return rects
-                .FindAll(e =>
-                    e.Top == detectRect.Bottom ||
-                    e.Bottom == detectRect.Top ||
-                    e.Left == detectRect.Right ||
-                    e.Right == detectRect.Left);
         }
 
         internal void SetDetectBlock(int x, int y, bool isDetected = true)

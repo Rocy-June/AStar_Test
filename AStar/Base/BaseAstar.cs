@@ -68,7 +68,7 @@ namespace Astar.Base
             return NodeQueue.Select(e => e.Location).ToList();
         }
 
-        public bool TryNextStep(out List<Point>? result)
+        public virtual bool TryNextStep(out List<Point>? result)
         {
             var flag = false;
             try
@@ -84,7 +84,7 @@ namespace Astar.Base
             return flag;
         }
 
-        public bool TryCalcResult(out List<Point>? result)
+        public virtual bool TryCalcResult(out List<Point>? result)
         {
             try
             {
@@ -98,7 +98,7 @@ namespace Astar.Base
             }
         }
 
-        public void CalcResult(out List<Point> result)
+        public virtual void CalcResult(out List<Point> result)
         {
             PathNode? lastNode = null;
             var flag = true;

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Astar.Tool;
 using Core;
 
-namespace Astar.Main.NetAstar
+namespace Astar.Main
 {
     public class NetMap
     {
