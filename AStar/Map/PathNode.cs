@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace Astar.Map
 {
-    [DebuggerDisplay("Location = {Location.X},{Location.Y}; Steps = {Location.Steps.ToString(\"F2\")}")]
+    [DebuggerDisplay("→{Bounds.X},↓{Bounds.Y},{Bounds.Width}x{Bounds.Height}; Node = {Location.X},{Location.Y}; Steps = {Steps.ToString(\"F2\")}")]
     public class PathNode
     {
+        internal Rectangle Bounds { get; private set; }
         internal Point Location { get; private set; }
         internal double Steps { get; private set; }
         internal PathNode? PrevNode { get; private set; }
@@ -24,6 +25,16 @@ namespace Astar.Map
 
         internal PathNode(Point location, PathNode? from = null, double cost = 1)
         {
+            Location = location;
+            PrevNode = from;
+            NextNodes = new List<PathNode>();
+
+            from?.AddNode(this, cost);
+        }
+
+        internal PathNode(Rectangle bounds, Point location, PathNode? from = null, double cost = 1)
+        {
+            Bounds = bounds;
             Location = location;
             PrevNode = from;
             NextNodes = new List<PathNode>();

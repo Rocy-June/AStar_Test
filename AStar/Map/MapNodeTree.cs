@@ -68,9 +68,45 @@ namespace Astar.Map
             }
         }
 
-        public MapNodeTree(List<Rectangle> rectangles) : this()
+        public MapNodeTree(List<Rectangle> rectangles, Point startPoint, Point endPoint) : this()
         {
             var nodes = new List<MapNode>();
+
+            var startRect = rectangles.First(e => e.Contains(startPoint));
+            var endRect = rectangles.First(e => e.Contains(endPoint));
+            nodes.Add(new MapNode
+            {
+                Bounds = startRect,
+                Location = startPoint,
+                PositionType =
+                    (startRect.Width == 1
+                        ? NodePositionType.Left | NodePositionType.Right
+                        : startPoint.X < startRect.Width / 2
+                            ? NodePositionType.Left
+                            : NodePositionType.Right) |
+                    (startRect.Height == 1
+                        ? NodePositionType.Top | NodePositionType.Bottom
+                        : startPoint.Y < startRect.Height / 2
+                            ? NodePositionType.Top
+                            : NodePositionType.Bottom),
+            });
+            nodes.Add(new MapNode
+            {
+                Bounds = endRect,
+                Location = endPoint,
+                PositionType =
+                    (endRect.Width == 1
+                        ? NodePositionType.Left | NodePositionType.Right
+                        : endRect.X < endRect.Width / 2
+                            ? NodePositionType.Left
+                            : NodePositionType.Right) |
+                    (endRect.Height == 1
+                        ? NodePositionType.Top | NodePositionType.Bottom
+                        : endRect.Y < endRect.Height / 2
+                            ? NodePositionType.Top
+                            : NodePositionType.Bottom),
+            });
+
             foreach (var rect in rectangles)
             {
                 if (rect.Width == 1)
@@ -128,15 +164,31 @@ namespace Astar.Map
             foreach (var node in nodes)
             {
                 node.NearingNodes.AddRange(nodes.Where(e => e.Bounds == node.Bounds && e != node));
-                node.NearingNodes.AddRange(
-                    nodes.Where(e =>
-                        e.Bounds.IntersectsWith(node.Bounds) &&
-                        e.Bounds.Top == node.Bounds.Bottom + 1 ||
-                        e.Bounds.Bottom == node.Bounds.Top - 1 ||
-                        e.Bounds.Left == node.Bounds.Right + 1 ||
-                        e.Bounds.Right == node.Bounds.Left - 1));
+                var intersects = nodes.Where(e => 
+                    e.Bounds.Left == node.Bounds.Right && e.Bounds.Top < node.Bounds.Bottom && e.Bounds.Bottom > node.Bounds.Top ||
+                    e.Bounds.Right == node.Bounds.Left && e.Bounds.Top < node.Bounds.Bottom && e.Bounds.Bottom > node.Bounds.Top ||
+                    e.Bounds.Top == node.Bounds.Bottom && e.Bounds.Left < node.Bounds.Right && e.Bounds.Right > node.Bounds.Left ||
+                    e.Bounds.Bottom == node.Bounds.Top && e.Bounds.Left < node.Bounds.Right && e.Bounds.Right > node.Bounds.Left);
+                if ((node.PositionType & NodePositionType.Top) > 0)
+                {
+                    intersects = intersects.Where(e => (e.PositionType & NodePositionType.Bottom) > 0 && e.Location.Y + 1 == node.Location.Y);
+                }
+                if ((node.PositionType & NodePositionType.Bottom) > 0)
+                {
+                    intersects = intersects.Where(e => (e.PositionType & NodePositionType.Top) > 0 && e.Location.Y - 1 == node.Location.Y);
+                }
+                if ((node.PositionType & NodePositionType.Left) > 0)
+                {
+                    intersects = intersects.Where(e => (e.PositionType & NodePositionType.Right) > 0 && e.Location.X + 1 == node.Location.X);
+                }
+                if ((node.PositionType & NodePositionType.Right) > 0)
+                {
+                    intersects = intersects.Where(e => (e.PositionType & NodePositionType.Left) > 0 && e.Location.X - 1 == node.Location.X);
+                }
+                var otherNodes = intersects.ToList();
+                node.NearingNodes.AddRange(otherNodes);
 
-                MapNodes.Add(node.Location, node);
+                MapNodes.TryAdd(node.Location, node);
             }
 
         }

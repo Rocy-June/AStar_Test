@@ -28,13 +28,15 @@ namespace Astar.Base
                 StartNode
             };
         }
-        public BaseAstar()
+        public BaseAstar(Point startPoint, Point endPoint)
         {
             StartNode = new PathNode(new Point());
+            StartPoint = startPoint;
+            EndPoint = endPoint;
             NodeQueue = new List<PathNode>();
         }
 
-        public void Reset(MapNodeTree nodeTree)
+        public virtual void Reset(MapNodeTree nodeTree)
         {
             Reset(nodeTree, StartPoint, EndPoint);
         }
@@ -49,7 +51,7 @@ namespace Astar.Base
             Reset(NodeTree, StartPoint, point);
         }
 
-        public void Reset(MapNodeTree? nodeTree, Point startPoint, Point endPoint)
+        public virtual void Reset(MapNodeTree? nodeTree, Point startPoint, Point endPoint)
         {
             NodeTree = nodeTree;
             StartNode = new PathNode(startPoint);
@@ -100,14 +102,19 @@ namespace Astar.Base
 
         public virtual void CalcResult(out List<Point> result)
         {
-            PathNode? lastNode = null;
+            CalcResult(out PathNode? lastNode);
+            result = PathNode.GetFullPath(lastNode);
+        }
+
+        protected virtual void CalcResult(out PathNode? result)
+        {
+            result = null;
+
             var flag = true;
             while (flag)
             {
-                flag = NextStep(out var outNode);
-                lastNode = outNode;
+                flag = NextStep(out result);
             }
-            result = PathNode.GetFullPath(lastNode);
         }
 
         private bool NextStep(out PathNode pathNode)
@@ -184,7 +191,7 @@ namespace Astar.Base
             return Distance.GetManhattan(from, to);
         }
 
-        public void ResetCalculation()
+        public virtual void ResetCalculation()
         {
             StartNode = new PathNode(StartPoint);
             NodeQueue = new List<PathNode>

@@ -5,12 +5,13 @@ using Astar.Main;
 using Core;
 using Extension;
 using Astar.Main.NetAstar;
+using Astar.Main.SegmentationAstar;
 
 namespace TestWinForm
 {
     public partial class SegmentationMapForm : Form
     {
-        private NetMapAstar Astar { get; set; }
+        private SegmentationMapAstar Astar { get; set; }
         private List<Point> LastStep { get; set; }
         private SettingType SettingType { get; set; }
         private Thread? AutoStepThread { get; set; }
@@ -24,7 +25,7 @@ namespace TestWinForm
             DoubleBuffered = true;
             ComboBox_SplitType.SelectedIndex = 0;
 
-            Astar = new NetMapAstar(
+            Astar = new SegmentationMapAstar(
                 new NetMap(
                     (int)NumericUpDown_MapX.Value,
                     (int)NumericUpDown_MapY.Value,
@@ -124,10 +125,20 @@ namespace TestWinForm
                 pen.Color = Color.Blue;
                 pen.Width = 2;
 
-                var rects = Astar.Map.GetRectangles();
+                var rects = Astar.Rectangles;
                 for (var i = 0; i < rects.Count; i++)
                 {
                     bg.DrawRectangle(pen, (float)(perLineX * rects[i].Left), (float)(perLineY * rects[i].Top), (float)(perLineX * rects[i].Width), (float)(perLineY * rects[i].Height));
+                }
+
+                for (var i = 1; i < LastStep.Count; i++)
+                {
+                    pen.Color = Color.Black;
+                    bg.DrawLine(pen,
+                        (float)((decimal)(LastStep[i - 1].X + 0.5) * perLineX),
+                        (float)((decimal)(LastStep[i - 1].Y + 0.5) * perLineY),
+                        (float)((decimal)(LastStep[i].X + 0.5) * perLineX),
+                        (float)((decimal)(LastStep[i].Y + 0.5) * perLineY));
                 }
 
                 bg.DrawString($"MouseState: {SettingType}", new Font("Microsoft YaHei", 9), new SolidBrush(Color.Black), new Point());
