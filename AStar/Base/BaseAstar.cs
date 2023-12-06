@@ -11,7 +11,7 @@ namespace Astar.Base
 {
     public class BaseAstar
     {
-        internal MapNodeTree? NodeTree { get; set; }
+        public MapNodeTree? NodeTree { get; set; } // todo: turn it to internal.
         public PathNode StartNode { get; protected set; }
         public Point StartPoint { get; private set; }
         public Point EndPoint { get; private set; }
@@ -36,27 +36,15 @@ namespace Astar.Base
             NodeQueue = new List<PathNode>();
         }
 
-        public virtual void Reset(MapNodeTree nodeTree)
+        public virtual void Reset(MapNodeTree? nodeTree = null, Point? startPoint = null, Point? endPoint = null)
         {
-            Reset(nodeTree, StartPoint, EndPoint);
-        }
+            startPoint ??= StartPoint;
+            endPoint ??= EndPoint;
 
-        public void ResetStartPoint(Point point)
-        {
-            Reset(NodeTree, point, EndPoint);
-        }
-
-        public void ResetEndPoint(Point point)
-        {
-            Reset(NodeTree, StartPoint, point);
-        }
-
-        public virtual void Reset(MapNodeTree? nodeTree, Point startPoint, Point endPoint)
-        {
             NodeTree = nodeTree;
-            StartNode = new PathNode(startPoint);
-            StartPoint = startPoint;
-            EndPoint = endPoint;
+            StartNode = new PathNode(startPoint.Value);
+            StartPoint = startPoint.Value;
+            EndPoint = endPoint.Value;
             NodeQueue = new List<PathNode>
             {
                 StartNode

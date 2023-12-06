@@ -116,13 +116,13 @@ namespace Astar.Main.SegmentationAstar
         {
             Level = -1;
             Rectangles = MapSegmentation.GetDoubleMoveableRectangles(Map.Walls);
-            Reset(new MapNodeTree(Rectangles, Map.StartPoint, Map.EndPoint));
+            Reset(new MapNodeTree(Rectangles, Map.StartPoint, Map.EndPoint), Map.StartPoint, Map.EndPoint);
         }
 
         public void Reset(int level)
         {
             Rectangles = MapSegmentation.GetDoubleMoveableRectangles(Map.Walls, level);
-            Reset(new MapNodeTree(Rectangles, Map.StartPoint, Map.EndPoint));
+            Reset(new MapNodeTree(Rectangles, Map.StartPoint, Map.EndPoint), Map.StartPoint, Map.EndPoint);
         }
 
         public override void ResetCalculation()

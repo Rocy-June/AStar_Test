@@ -11,7 +11,7 @@ namespace Astar.Map
 {
     public class MapNodeTree
     {
-        internal Dictionary<Point, MapNode> MapNodes { get; set; }
+        public Dictionary<Point, MapNode> MapNodes { get; set; } // todo: turn it to internal.
         internal Dictionary<Point, bool> NodeDetected { get; set; }
 
         private MapNodeTree()
@@ -74,97 +74,122 @@ namespace Astar.Map
 
             var startRect = rectangles.First(e => e.Contains(startPoint));
             var endRect = rectangles.First(e => e.Contains(endPoint));
-            nodes.Add(new MapNode
-            {
-                Bounds = startRect,
-                Location = startPoint,
-                PositionType =
-                    (startRect.Width == 1
-                        ? NodePositionType.Left | NodePositionType.Right
-                        : startPoint.X < startRect.Width / 2
-                            ? NodePositionType.Left
-                            : NodePositionType.Right) |
-                    (startRect.Height == 1
-                        ? NodePositionType.Top | NodePositionType.Bottom
-                        : startPoint.Y < startRect.Height / 2
-                            ? NodePositionType.Top
-                            : NodePositionType.Bottom),
-            });
-            nodes.Add(new MapNode
-            {
-                Bounds = endRect,
-                Location = endPoint,
-                PositionType =
-                    (endRect.Width == 1
-                        ? NodePositionType.Left | NodePositionType.Right
-                        : endRect.X < endRect.Width / 2
-                            ? NodePositionType.Left
-                            : NodePositionType.Right) |
-                    (endRect.Height == 1
-                        ? NodePositionType.Top | NodePositionType.Bottom
-                        : endRect.Y < endRect.Height / 2
-                            ? NodePositionType.Top
-                            : NodePositionType.Bottom),
-            });
 
             foreach (var rect in rectangles)
             {
+                // todo: let the rect. side nodes become a new node, except there already has a node, then judge the edge let the nodes have multiple position type
+
                 if (rect.Width == 1)
                 {
-                    nodes.Add(new MapNode
+                    var location = new Point(rect.X, rect.Y + rect.Height / 2);
+                    var node = nodes.FirstOrDefault(e => e.Location == location);
+                    if (node != default)
                     {
-                        Bounds = rect,
-                        Location = new Point(rect.X, rect.Y + rect.Height / 2),
-                        PositionType = NodePositionType.Left | NodePositionType.Right,
-                    });
+                        node.PositionType |= NodePositionType.Left | NodePositionType.Right;
+                    }
+                    else
+                    {
+                        nodes.Add(new MapNode
+                        {
+                            Bounds = rect,
+                            Location = location,
+                            PositionType = NodePositionType.Left | NodePositionType.Right,
+                        });
+                    }
                 }
                 else
                 {
-                    nodes.Add(new MapNode
+                    var leftLocation = new Point(rect.X, rect.Y + rect.Height / 2);
+                    var leftNode = nodes.FirstOrDefault(e => e.Location == leftLocation);
+                    if (leftNode != default)
                     {
-                        Bounds = rect,
-                        Location = new Point(rect.X, rect.Y + rect.Height / 2),
-                        PositionType = NodePositionType.Left
-                    });
-                    nodes.Add(new MapNode
+                        leftNode.PositionType |= NodePositionType.Left;
+                    }
+                    else
                     {
-                        Bounds = rect,
-                        Location = new Point(rect.X + rect.Width - 1, rect.Y + rect.Height / 2),
-                        PositionType = NodePositionType.Right
-                    });
+                        nodes.Add(new MapNode
+                        {
+                            Bounds = rect,
+                            Location = leftLocation,
+                            PositionType = NodePositionType.Left
+                        });
+                    }
+
+                    var rightLocation = new Point(rect.X + rect.Width - 1, rect.Y + rect.Height / 2);
+                    var rightNode = nodes.FirstOrDefault(e => e.Location == rightLocation);
+                    if (rightNode != default)
+                    {
+                        rightNode.PositionType |= NodePositionType.Right;
+                    }
+                    else
+                    {
+                        nodes.Add(new MapNode
+                        {
+                            Bounds = rect,
+                            Location = rightLocation,
+                            PositionType = NodePositionType.Right
+                        });
+                    }
                 }
-
-
 
                 if (rect.Height == 1)
                 {
-                    nodes.Add(new MapNode
+                    var location = new Point(rect.X + rect.Width / 2, rect.Y);
+                    var node = nodes.FirstOrDefault(e => e.Location == location);
+                    if (node != default)
                     {
-                        Bounds = rect,
-                        Location = new Point(rect.X + rect.Width / 2, rect.Y),
-                        PositionType = NodePositionType.Top | NodePositionType.Bottom
-                    });
+                        node.PositionType |= NodePositionType.Top | NodePositionType.Bottom;
+                    }
+                    else
+                    {
+                        nodes.Add(new MapNode
+                        {
+                            Bounds = rect,
+                            Location = location,
+                            PositionType = NodePositionType.Top | NodePositionType.Bottom
+                        });
+                    }
                 }
                 else
                 {
-                    nodes.Add(new MapNode
+                    var topLocation = new Point(rect.X + rect.Width / 2, rect.Y);
+                    var topNode = nodes.FirstOrDefault(e => e.Location == topLocation);
+                    if (topNode != default)
                     {
-                        Bounds = rect,
-                        Location = new Point(rect.X + rect.Width / 2, rect.Y),
-                        PositionType = NodePositionType.Top
-                    });
-                    nodes.Add(new MapNode
+                        topNode.PositionType |= NodePositionType.Top;
+                    }
+                    else
                     {
-                        Bounds = rect,
-                        Location = new Point(rect.X + rect.Width / 2, rect.Y + rect.Height - 1),
-                        PositionType = NodePositionType.Bottom
-                    });
+
+                        nodes.Add(new MapNode
+                        {
+                            Bounds = rect,
+                            Location = topLocation,
+                            PositionType = NodePositionType.Top
+                        });
+                    }
+
+                    var bottomLocation = new Point(rect.X + rect.Width / 2, rect.Y + rect.Height - 1);
+                    var bottomNode = nodes.FirstOrDefault(e => e.Location == bottomLocation);
+                    if (bottomNode != default)
+                    {
+                        bottomNode.PositionType |= NodePositionType.Bottom;
+                    }
+                    else
+                    {
+                        nodes.Add(new MapNode
+                        {
+                            Bounds = rect,
+                            Location = bottomLocation,
+                            PositionType = NodePositionType.Bottom
+                        });
+                    }
                 }
             }
             foreach (var node in nodes)
             {
                 node.NearingNodes.AddRange(nodes.Where(e => e.Bounds == node.Bounds && e != node));
-                var intersects = nodes.Where(e => 
+                var intersects = nodes.Where(e =>
                     e.Bounds.Left == node.Bounds.Right && e.Bounds.Top < node.Bounds.Bottom && e.Bounds.Bottom > node.Bounds.Top ||
                     e.Bounds.Right == node.Bounds.Left && e.Bounds.Top < node.Bounds.Bottom && e.Bounds.Bottom > node.Bounds.Top ||
                     e.Bounds.Top == node.Bounds.Bottom && e.Bounds.Left < node.Bounds.Right && e.Bounds.Right > node.Bounds.Left ||
@@ -189,6 +214,45 @@ namespace Astar.Map
                 node.NearingNodes.AddRange(otherNodes);
 
                 MapNodes.TryAdd(node.Location, node);
+            }
+
+            if (!nodes.Any(e => e.Location == startPoint))
+            {
+                nodes.Add(new MapNode
+                {
+                    Bounds = startRect,
+                    Location = startPoint,
+                    PositionType =
+                        (startRect.Width == 1
+                            ? NodePositionType.Left | NodePositionType.Right
+                            : startPoint.X < startRect.Width / 2
+                                ? NodePositionType.Left
+                                : NodePositionType.Right) |
+                        (startRect.Height == 1
+                            ? NodePositionType.Top | NodePositionType.Bottom
+                            : startPoint.Y < startRect.Height / 2
+                                ? NodePositionType.Top
+                                : NodePositionType.Bottom),
+                });
+            }
+            if (!nodes.Any(e => e.Location == endPoint))
+            {
+                nodes.Add(new MapNode
+                {
+                    Bounds = endRect,
+                    Location = endPoint,
+                    PositionType =
+                        (endRect.Width == 1
+                            ? NodePositionType.Left | NodePositionType.Right
+                            : endRect.X < endRect.Width / 2
+                                ? NodePositionType.Left
+                                : NodePositionType.Right) |
+                        (endRect.Height == 1
+                            ? NodePositionType.Top | NodePositionType.Bottom
+                            : endRect.Y < endRect.Height / 2
+                                ? NodePositionType.Top
+                                : NodePositionType.Bottom),
+                });
             }
 
         }

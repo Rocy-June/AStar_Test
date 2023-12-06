@@ -6,6 +6,8 @@ using Core;
 using Extension;
 using Astar.Main.NetAstar;
 using Astar.Main.SegmentationAstar;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace TestWinForm
 {
@@ -80,6 +82,17 @@ namespace TestWinForm
                     }
                 }
 
+                pen.Color = Color.DarkSlateGray;
+                foreach (var node_kvp in Astar.NodeTree?.MapNodes ?? new Dictionary<Point, MapNode>())
+                {
+                    bg.FillRectangle(
+                        new SolidBrush(Color.LightGray),
+                        new RectangleF(
+                            new PointF((float)(node_kvp.Key.X * perLineX), (float)(node_kvp.Key.Y * perLineY)),
+                            new SizeF((float)perLineX, (float)perLineY)));
+                }
+                pen.Color = Color.Black;
+
                 var readOnlyNode = Astar.StartNode.GetReadOnlyNode();
                 DrawPathNode(bg, perLineX, perLineY, readOnlyNode);
 
@@ -139,6 +152,19 @@ namespace TestWinForm
                         (float)((decimal)(LastStep[i - 1].Y + 0.5) * perLineY),
                         (float)((decimal)(LastStep[i].X + 0.5) * perLineX),
                         (float)((decimal)(LastStep[i].Y + 0.5) * perLineY));
+                }
+
+                bg.SmoothingMode = SmoothingMode.HighQuality;
+                pen.Color = Color.DarkSlateGray;
+                pen.Width = 1;
+                foreach (var node_kvp in Astar.NodeTree?.MapNodes ?? new Dictionary<Point, MapNode>())
+                {
+                    foreach (var node in node_kvp.Value.NearingNodes)
+                    {
+                        bg.DrawLine(pen,
+                            (float)((decimal)(node_kvp.Key.X + 0.5) * perLineX), (float)((decimal)(node_kvp.Key.Y + 0.5) * perLineY),
+                            (float)((decimal)(node.Location.X + 0.5) * perLineX), (float)((decimal)(node.Location.Y + 0.5) * perLineY));
+                    }
                 }
 
                 bg.DrawString($"MouseState: {SettingType}", new Font("Microsoft YaHei", 9), new SolidBrush(Color.Black), new Point());
@@ -354,7 +380,7 @@ namespace TestWinForm
             {
                 var point = GetBlockPoint(GetCursorToControl(Panel_Canvas));
                 Astar.Map.ResetPoint(point);
-                Astar.ResetStartPoint(point);
+                Astar.Reset();
                 Steps = 0;
                 LastStep.Clear();
                 SettingType = SettingType.None;
@@ -364,7 +390,7 @@ namespace TestWinForm
             {
                 var point = GetBlockPoint(GetCursorToControl(Panel_Canvas));
                 Astar.Map.ResetPoint(null, point);
-                Astar.ResetEndPoint(point);
+                Astar.Reset();
                 Steps = 0;
                 LastStep.Clear();
                 SettingType = SettingType.None;

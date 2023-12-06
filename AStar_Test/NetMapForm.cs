@@ -343,7 +343,7 @@ namespace TestWinForm
             {
                 var point = GetBlockPoint(GetCursorToControl(Panel_Canvas));
                 Astar.Map.ResetPoint(point);
-                Astar.ResetStartPoint(point);
+                Astar.Reset(null, point, null);
                 Steps = 0;
                 LastStep.Clear();
                 SettingType = SettingType.None;
@@ -353,7 +353,7 @@ namespace TestWinForm
             {
                 var point = GetBlockPoint(GetCursorToControl(Panel_Canvas));
                 Astar.Map.ResetPoint(null, point);
-                Astar.ResetEndPoint(point);
+                Astar.Reset(null, null, point);
                 Steps = 0;
                 LastStep.Clear();
                 SettingType = SettingType.None;
