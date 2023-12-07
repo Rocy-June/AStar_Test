@@ -75,9 +75,13 @@ namespace Astar.Map
             var startRect = rectangles.First(e => e.Contains(startPoint));
             var endRect = rectangles.First(e => e.Contains(endPoint));
 
+            // todo: let the rectangle side nodes become a new node,
+            //       unless there already has a node,
+            //       then judge the edge let the nodes have multiple position type
+
             foreach (var rect in rectangles)
             {
-                // todo: let the rect. side nodes become a new node, except there already has a node, then judge the edge let the nodes have multiple position type
+                
 
                 if (rect.Width == 1)
                 {
