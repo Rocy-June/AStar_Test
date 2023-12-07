@@ -26,6 +26,7 @@ namespace TestWinForm
 
             DoubleBuffered = true;
             ComboBox_SplitType.SelectedIndex = 0;
+            Button_NextStep.MouseWheel += Button_NextStep_MouseWheel;
 
             Astar = new SegmentationMapAstar(
                 new NetMap(
@@ -154,18 +155,19 @@ namespace TestWinForm
                         (float)((decimal)(LastStep[i].Y + 0.5) * perLineY));
                 }
 
-                bg.SmoothingMode = SmoothingMode.HighQuality;
-                pen.Color = Color.DarkSlateGray;
-                pen.Width = 1;
-                foreach (var node_kvp in Astar.NodeTree?.MapNodes ?? new Dictionary<Point, MapNode>())
-                {
-                    foreach (var node in node_kvp.Value.NearingNodes)
-                    {
-                        bg.DrawLine(pen,
-                            (float)((decimal)(node_kvp.Key.X + 0.5) * perLineX), (float)((decimal)(node_kvp.Key.Y + 0.5) * perLineY),
-                            (float)((decimal)(node.Location.X + 0.5) * perLineX), (float)((decimal)(node.Location.Y + 0.5) * perLineY));
-                    }
-                }
+                //// Segmentation map node nearing line.
+                //bg.SmoothingMode = SmoothingMode.HighQuality;
+                //pen.Color = Color.DarkSlateGray;
+                //pen.Width = 1;
+                //foreach (var node_kvp in Astar.NodeTree?.MapNodes ?? new Dictionary<Point, MapNode>())
+                //{
+                //    foreach (var node in node_kvp.Value.NearingNodes)
+                //    {
+                //        bg.DrawLine(pen,
+                //            (float)((decimal)(node_kvp.Key.X + 0.5) * perLineX), (float)((decimal)(node_kvp.Key.Y + 0.5) * perLineY),
+                //            (float)((decimal)(node.Location.X + 0.5) * perLineX), (float)((decimal)(node.Location.Y + 0.5) * perLineY));
+                //    }
+                //}
 
                 bg.DrawString($"MouseState: {SettingType}", new Font("Microsoft YaHei", 9), new SolidBrush(Color.Black), new Point());
                 bg.DrawString(Steps.ToString(), new Font("Microsoft YaHei", 9, FontStyle.Bold), new SolidBrush(Color.Black), new Point(0, Panel_Canvas.Height - 16));
@@ -295,12 +297,18 @@ namespace TestWinForm
 
             var flag = Astar.TryNextStep(out var lastStep);
             LastStep = lastStep ?? new List<Point>();
+            Steps++;
             RenderMap();
 
             if (!flag)
             {
                 MessageBox.Show("Ö´ÐÐÍê±Ï");
             }
+        }
+
+        private void Button_NextStep_MouseWheel(object? sender, MouseEventArgs e)
+        {
+            Button_NextStep_Click(Button_NextStep, new EventArgs());
         }
 
         private void Button_AutoStep_Click(object sender, EventArgs e)

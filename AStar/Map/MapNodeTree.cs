@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Astar.Main;
+using Astar.Tool;
 using Core;
+using Extension;
 
 namespace Astar.Map
 {
@@ -70,193 +72,131 @@ namespace Astar.Map
 
         public MapNodeTree(List<Rectangle> rectangles, Point startPoint, Point endPoint) : this()
         {
-            var nodes = new List<MapNode>();
+            var dicNodes = new Dictionary<Point, MapNode>();
 
             var startRect = rectangles.First(e => e.Contains(startPoint));
             var endRect = rectangles.First(e => e.Contains(endPoint));
 
-            // todo: let the rectangle side nodes become a new node,
-            //       unless there already has a node,
-            //       then judge the edge let the nodes have multiple position type
+            dicNodes.TryAdd(startPoint, new MapNode
+            {
+                Bounds = startRect,
+                Location = startPoint
+            });
+            dicNodes.TryAdd(endPoint, new MapNode
+            {
+                Bounds = endRect,
+                Location = endPoint
+            });
+
+            // let the rectangle side nodes become a new node,
+            // unless there already has a node,
+            // then judge the edge let the nodes have multiple position type
 
             foreach (var rect in rectangles)
             {
-                
-
-                if (rect.Width == 1)
+                var tmpLocation = new Point(rect.Left, rect.Top);
+                dicNodes.TryAdd(tmpLocation, new MapNode
                 {
-                    var location = new Point(rect.X, rect.Y + rect.Height / 2);
-                    var node = nodes.FirstOrDefault(e => e.Location == location);
-                    if (node != default)
-                    {
-                        node.PositionType |= NodePositionType.Left | NodePositionType.Right;
-                    }
-                    else
-                    {
-                        nodes.Add(new MapNode
-                        {
-                            Bounds = rect,
-                            Location = location,
-                            PositionType = NodePositionType.Left | NodePositionType.Right,
-                        });
-                    }
-                }
-                else
-                {
-                    var leftLocation = new Point(rect.X, rect.Y + rect.Height / 2);
-                    var leftNode = nodes.FirstOrDefault(e => e.Location == leftLocation);
-                    if (leftNode != default)
-                    {
-                        leftNode.PositionType |= NodePositionType.Left;
-                    }
-                    else
-                    {
-                        nodes.Add(new MapNode
-                        {
-                            Bounds = rect,
-                            Location = leftLocation,
-                            PositionType = NodePositionType.Left
-                        });
-                    }
+                    Bounds = rect,
+                    Location = tmpLocation
+                });
 
-                    var rightLocation = new Point(rect.X + rect.Width - 1, rect.Y + rect.Height / 2);
-                    var rightNode = nodes.FirstOrDefault(e => e.Location == rightLocation);
-                    if (rightNode != default)
+                tmpLocation = new Point(rect.Right - 1, rect.Top);
+                dicNodes.TryAdd(tmpLocation, new MapNode
+                {
+                    Bounds = rect,
+                    Location = tmpLocation
+                });
+
+                tmpLocation = new Point(rect.Left, rect.Bottom - 1);
+                dicNodes.TryAdd(tmpLocation, new MapNode
+                {
+                    Bounds = rect,
+                    Location = tmpLocation
+                });
+
+                tmpLocation = new Point(rect.Right - 1, rect.Bottom - 1);
+                dicNodes.TryAdd(tmpLocation, new MapNode
+                {
+                    Bounds = rect,
+                    Location = tmpLocation
+                });
+
+                var tmpNearing = rectangles.Count(e => rect.Top == e.Bottom && rect.Left < e.Right && rect.Right > e.Left);
+                var tmpSplits = tmpNearing + 1m;
+                var tmpPerSec = rect.Width / tmpSplits;
+                for (var i = 1; i < tmpSplits; i++)
+                {
+                    tmpLocation = new Point((int)(rect.Left + tmpPerSec * i), rect.Top);
+                    dicNodes.TryAdd(tmpLocation, new MapNode
                     {
-                        rightNode.PositionType |= NodePositionType.Right;
-                    }
-                    else
-                    {
-                        nodes.Add(new MapNode
-                        {
-                            Bounds = rect,
-                            Location = rightLocation,
-                            PositionType = NodePositionType.Right
-                        });
-                    }
+                        Bounds = rect,
+                        Location = tmpLocation
+                    });
                 }
 
-                if (rect.Height == 1)
+                tmpNearing = rectangles.Count(e => rect.Bottom == e.Top && rect.Left < e.Right && rect.Right > e.Left);
+                tmpSplits = tmpNearing + 1m;
+                tmpPerSec = rect.Width / tmpSplits;
+                for (var i = 1; i < tmpSplits; i++)
                 {
-                    var location = new Point(rect.X + rect.Width / 2, rect.Y);
-                    var node = nodes.FirstOrDefault(e => e.Location == location);
-                    if (node != default)
+                    tmpLocation = new Point((int)(rect.Left + tmpPerSec * i), rect.Bottom - 1);
+                    dicNodes.TryAdd(tmpLocation, new MapNode
                     {
-                        node.PositionType |= NodePositionType.Top | NodePositionType.Bottom;
-                    }
-                    else
-                    {
-                        nodes.Add(new MapNode
-                        {
-                            Bounds = rect,
-                            Location = location,
-                            PositionType = NodePositionType.Top | NodePositionType.Bottom
-                        });
-                    }
+                        Bounds = rect,
+                        Location = tmpLocation
+                    });
                 }
-                else
+
+                tmpNearing = rectangles.Count(e => rect.Left == e.Right && rect.Top < e.Bottom && rect.Bottom > e.Top);
+                tmpSplits = tmpNearing + 1m;
+                tmpPerSec = rect.Height / tmpSplits;
+                for (var i = 1; i < tmpSplits; i++)
                 {
-                    var topLocation = new Point(rect.X + rect.Width / 2, rect.Y);
-                    var topNode = nodes.FirstOrDefault(e => e.Location == topLocation);
-                    if (topNode != default)
+                    tmpLocation = new Point(rect.Left, (int)(rect.Top + tmpPerSec * i));
+                    dicNodes.TryAdd(tmpLocation, new MapNode
                     {
-                        topNode.PositionType |= NodePositionType.Top;
-                    }
-                    else
-                    {
-
-                        nodes.Add(new MapNode
-                        {
-                            Bounds = rect,
-                            Location = topLocation,
-                            PositionType = NodePositionType.Top
-                        });
-                    }
-
-                    var bottomLocation = new Point(rect.X + rect.Width / 2, rect.Y + rect.Height - 1);
-                    var bottomNode = nodes.FirstOrDefault(e => e.Location == bottomLocation);
-                    if (bottomNode != default)
-                    {
-                        bottomNode.PositionType |= NodePositionType.Bottom;
-                    }
-                    else
-                    {
-                        nodes.Add(new MapNode
-                        {
-                            Bounds = rect,
-                            Location = bottomLocation,
-                            PositionType = NodePositionType.Bottom
-                        });
-                    }
+                        Bounds = rect,
+                        Location = tmpLocation
+                    });
                 }
+
+                tmpNearing = rectangles.Count(e => rect.Right == e.Left && rect.Top < e.Bottom && rect.Bottom > e.Top);
+                tmpSplits = tmpNearing + 1m;
+                tmpPerSec = rect.Height / tmpSplits;
+                for (var i = 1; i < tmpSplits; i++)
+                {
+                    tmpLocation = new Point(rect.Right - 1, (int)(rect.Top + tmpPerSec * i));
+                    dicNodes.TryAdd(tmpLocation, new MapNode
+                    {
+                        Bounds = rect,
+                        Location = tmpLocation
+                    });
+                }
+            }
+
+            var nodes = dicNodes.Select(e => e.Value).ToList();
+            foreach (var node in nodes)
+            {
+                node.PositionType =
+                    (node.Location.X == node.Bounds.Left ? NodePositionType.Left : 0) |
+                    (node.Location.X == node.Bounds.Right - 1 ? NodePositionType.Right : 0) |
+                    (node.Location.Y == node.Bounds.Top ? NodePositionType.Top : 0) |
+                    (node.Location.Y == node.Bounds.Bottom - 1 ? NodePositionType.Bottom : 0);
             }
             foreach (var node in nodes)
             {
                 node.NearingNodes.AddRange(nodes.Where(e => e.Bounds == node.Bounds && e != node));
-                var intersects = nodes.Where(e =>
-                    e.Bounds.Left == node.Bounds.Right && e.Bounds.Top < node.Bounds.Bottom && e.Bounds.Bottom > node.Bounds.Top ||
-                    e.Bounds.Right == node.Bounds.Left && e.Bounds.Top < node.Bounds.Bottom && e.Bounds.Bottom > node.Bounds.Top ||
-                    e.Bounds.Top == node.Bounds.Bottom && e.Bounds.Left < node.Bounds.Right && e.Bounds.Right > node.Bounds.Left ||
-                    e.Bounds.Bottom == node.Bounds.Top && e.Bounds.Left < node.Bounds.Right && e.Bounds.Right > node.Bounds.Left);
-                if ((node.PositionType & NodePositionType.Top) > 0)
-                {
-                    intersects = intersects.Where(e => (e.PositionType & NodePositionType.Bottom) > 0 && e.Location.Y + 1 == node.Location.Y);
-                }
-                if ((node.PositionType & NodePositionType.Bottom) > 0)
-                {
-                    intersects = intersects.Where(e => (e.PositionType & NodePositionType.Top) > 0 && e.Location.Y - 1 == node.Location.Y);
-                }
-                if ((node.PositionType & NodePositionType.Left) > 0)
-                {
-                    intersects = intersects.Where(e => (e.PositionType & NodePositionType.Right) > 0 && e.Location.X + 1 == node.Location.X);
-                }
-                if ((node.PositionType & NodePositionType.Right) > 0)
-                {
-                    intersects = intersects.Where(e => (e.PositionType & NodePositionType.Left) > 0 && e.Location.X - 1 == node.Location.X);
-                }
-                var otherNodes = intersects.ToList();
-                node.NearingNodes.AddRange(otherNodes);
 
-                MapNodes.TryAdd(node.Location, node);
-            }
+                var tmp = nodes
+                    .Where(e =>
+                        e.Bounds != node.Bounds &&
+                        e.Bounds.IsNearingWith(node.Bounds, true) &&
+                        Distance.GetEuclidean(e.Location, node.Location) < 2)
+                    .ToList();
+                node.NearingNodes.AddRange(tmp);
 
-            if (!nodes.Any(e => e.Location == startPoint))
-            {
-                nodes.Add(new MapNode
-                {
-                    Bounds = startRect,
-                    Location = startPoint,
-                    PositionType =
-                        (startRect.Width == 1
-                            ? NodePositionType.Left | NodePositionType.Right
-                            : startPoint.X < startRect.Width / 2
-                                ? NodePositionType.Left
-                                : NodePositionType.Right) |
-                        (startRect.Height == 1
-                            ? NodePositionType.Top | NodePositionType.Bottom
-                            : startPoint.Y < startRect.Height / 2
-                                ? NodePositionType.Top
-                                : NodePositionType.Bottom),
-                });
-            }
-            if (!nodes.Any(e => e.Location == endPoint))
-            {
-                nodes.Add(new MapNode
-                {
-                    Bounds = endRect,
-                    Location = endPoint,
-                    PositionType =
-                        (endRect.Width == 1
-                            ? NodePositionType.Left | NodePositionType.Right
-                            : endRect.X < endRect.Width / 2
-                                ? NodePositionType.Left
-                                : NodePositionType.Right) |
-                        (endRect.Height == 1
-                            ? NodePositionType.Top | NodePositionType.Bottom
-                            : endRect.Y < endRect.Height / 2
-                                ? NodePositionType.Top
-                                : NodePositionType.Bottom),
-                });
+                MapNodes.Add(node.Location, node);
             }
 
         }

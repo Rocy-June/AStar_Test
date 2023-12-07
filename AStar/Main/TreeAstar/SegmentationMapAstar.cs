@@ -47,6 +47,14 @@ namespace Astar.Main.SegmentationAstar
 
         public override bool TryNextStep(out List<Point>? result)
         {
+            var flag = TryNextStep(out PathNode? lastNode);
+            result = PathNode.GetFullPath(lastNode);
+
+            return flag;
+        }
+
+        protected override bool TryNextStep(out PathNode? result)
+        {
             if (Level == -1 && !NextLevel())
             {
                 result = null;
@@ -121,6 +129,8 @@ namespace Astar.Main.SegmentationAstar
 
         public void Reset(int level)
         {
+            // todo: Delete prev level unused rectagles,
+            //       and delete unused tree node.
             Rectangles = MapSegmentation.GetDoubleMoveableRectangles(Map.Walls, level);
             Reset(new MapNodeTree(Rectangles, Map.StartPoint, Map.EndPoint), Map.StartPoint, Map.EndPoint);
         }

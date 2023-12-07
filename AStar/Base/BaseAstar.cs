@@ -60,11 +60,18 @@ namespace Astar.Base
 
         public virtual bool TryNextStep(out List<Point>? result)
         {
+            var flag = TryNextStep(out PathNode? nodeResult);
+            result = PathNode.GetFullPath(nodeResult);
+
+            return flag;
+        }
+
+        protected virtual bool TryNextStep(out PathNode? result)
+        {
             var flag = false;
             try
             {
-                flag = NextStep(out var endNode);
-                result = PathNode.GetFullPath(endNode);
+                flag = NextStep(out result);
             }
             catch
             {

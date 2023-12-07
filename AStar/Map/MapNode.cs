@@ -32,7 +32,7 @@ namespace Astar.Map
 
         private string PositionTypeString()
         {
-            var typeStr = new List<string>();
+            var typeStr = new List<string>(4);
             if ((PositionType & NodePositionType.Top) > 0)
             {
                 typeStr.Add("Top");
